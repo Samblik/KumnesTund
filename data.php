@@ -1,10 +1,13 @@
 <?php
 
 		require_once("functions.php");
+		require_once("User_interest.class.php");
 
 	//Kontrollin kas kasutaja on sisse loginud
 	if(!isset($_SESSION["id_from_db"])){
 		header("Location: login_sample.php");
+		
+		exit();
 		
 		
 		
@@ -16,8 +19,23 @@
 		
 	}
 	
-
+	$Interestmanger = new Interestmanger($mysqli);
 	
+
+	if(isset($_GET["new_interest"])){
+		
+		$create_response = $Interestmanger->addInterest($_GET["new_interest"]);
+		
+	}
+	
+	if(isset($_GET["dropdownselect"])){
+		
+		$UserInterest_response = $Interestmanger->addUserInterest($_GET["dropdownselect"], $_SESSION["id_from_db"]);
+	}
+
+
+
+      
 	
 
 ?>
@@ -35,21 +53,37 @@
 	<a href="?logout=1">Logi väljalja</a>
 </p>
 
-<h2>Pilt</h2>
+<h2>Lisa uus huviala</h2>
 
+ <?php if(isset($create_response->error)): ?>
+	<p style="color:red;"><?=$create_response->error->message; ?>
+	</p>
+  <?php elseif(isset($create_response->success)): ?>
+  	<p style="color:green;"><?=$create_response->success->message; ?>
+	</p>
+  
+  <?php endif; ?>
 
-<?php if(file_exists($target_file)): ?>
-
-	<div style="width:250px; height:250px; background-image:url(<?=$target_file; ?>); background-position: center center; background-size: cover;"></div>
-	<a href="?delete_image">Kustuta</a>
-
-<?php else: ?>
-<form action="data.php" method="post" enctype="multipart/form-data">
-    Select image to upload:
-    <input type="file" name="fileToUpload" id="fileToUpload">
-    <input type="submit" value="Upload Image" name="submit">
+<form>
+	<input name="new_interest">
+	<input type="submit">
 </form>
-<?php endif; ?>
+
+
+ <?php if(isset($UserInterest_response->error)): ?>
+	<p style="color:red;"><?=$UserInterest_response->error->message; ?>
+	</p>
+  <?php elseif(isset($UserInterest_response->success)): ?>
+  	<p style="color:green;"><?=$UserInterest_response->success->message; ?>
+	</p>
+  
+  <?php endif; ?>
+
+<h2>Minu huvialad</h2>
+<form>
+	<?php echo $Interestmanger->createDropdown(); ?>
+	<input type="submit">
+</form>
 
 
 <body>

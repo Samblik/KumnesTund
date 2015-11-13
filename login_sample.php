@@ -106,7 +106,7 @@
   	$data = htmlspecialchars($data); // 
   	return $data;
   }
-
+/**/
 ?>
 <!DOCTYPE html>
 <html>
@@ -150,3 +150,4 @@
   </form>
 <body>
 <html>
+
