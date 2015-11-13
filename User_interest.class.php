@@ -185,6 +185,25 @@
 			
 		}
 		
+		function getUserInterests($user_id){
+			$html = ' ';
+			
+			$stmt = $this->connection->prepare("SELECT Interests.name FROM User_interests INNER JOIN Interests ON User_interests.Interests_ID = Interests_ID WHERE User_interests.user_ID = ?");
+			$stmt->bind_param("i", $this->user_id);
+			$stmt->bind_result($name);
+			$stmt->execute();
+			
+			while($stmt->fetch()){
+				$html .= $name.' ';
+				
+			}
+			$stmt->close();
+			
+			return $html;
+			
+			
+		}
+		
 		
 	}
 
